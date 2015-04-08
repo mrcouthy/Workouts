@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,8 @@ namespace ClapTest
         static void Main(string[] args)
         {
             //Parser.Run<ClapApp, ClapApp2>(args);//use ClapTest.exe ClapApp.foo -bar:a -count:3
-            Parser.Run<ClapApp>(args);
+            Parser.Run<TClap>(args);
+          //  Parser.Run<ClapApp>(args);
         }
 
         public enum OptionEnum
@@ -141,6 +143,59 @@ namespace ClapTest
                     Console.WriteLine("Ola oho Clap2 {0}", bar);
                 }
             }
+        }
+
+        public class TClap
+        {
+            [Empty]
+            public static void Foo()
+            {
+                Console.WriteLine("T3");
+            }
+
+            /// <summary>
+            /// .exe -workingpath:a
+            /// </summary>
+            /// <param name="workingpath"></param>
+            [Verb(IsDefault = true)]
+            public static void Foo(string workingpath)
+            {
+                Console.WriteLine("WorkingFolder is {0}", workingpath);
+            }
+
+            /// <summary>
+            /// .exe Append
+            /// </summary>
+            [Verb]
+            public static void Append()
+            {
+                Console.WriteLine("T3 append");
+            }
+
+
+            [Verb]
+            public static void test(string workingpath)
+            {
+                Console.WriteLine("WorkingFolder is {0}", workingpath);
+            }
+
+
+            [Error]
+            public static void HandleError(ExceptionContext context)
+            {
+                Console.WriteLine("Use help option eg '*.exe help' for Help. Err :" + context.Exception.Message);
+            }
+
+
+            //[Empty, Help] use this if help to be displayed on empty
+            [Help]
+            public static void Help(string help)
+            {
+                // this is an empty handler that prints
+                // the automatic help string to the console.
+                Console.WriteLine(help);
+            }
+
         }
     }
 }
